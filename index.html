@@ -1,146 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Watch Video</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
-html,body{
-width:100%;
-height:100%;
+body{
 background:#000;
-font-family:Arial,Helvetica,sans-serif;
+font-family:Arial, sans-serif;
 color:#fff;
 }
 
-.watch-page{
-display:flex;
-flex-direction:column;
-width:100%;
-height:100vh;
-}
-
-.video-frame{
+/* VIDEO */
+.video-container{
 position:relative;
 width:100%;
-flex:1;
+height:60vh;
 background:#000;
 }
 
-.video-frame iframe{
+video{
 width:100%;
 height:100%;
-border:0;
-display:block;
+object-fit:cover;
 }
 
-.share-btn{
+/* PLAY BUTTON */
+.play-overlay{
 position:absolute;
-right:16px;
-bottom:16px;
-z-index:20;
-border:0;
-border-radius:999px;
-padding:12px 18px;
-background:rgba(0,0,0,0.65);
-color:#fff;
-font-size:14px;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:80px;
+height:80px;
+border-radius:50%;
+background:rgba(0,0,0,0.6);
+display:flex;
+align-items:center;
+justify-content:center;
 cursor:pointer;
-backdrop-filter:blur(8px);
+z-index:10;
 }
 
-.no-video{
-display:flex;
-justify-content:center;
-align-items:center;
-height:100%;
-font-size:16px;
-opacity:0.7;
+.play-overlay:after{
+content:'▶';
+font-size:30px;
+color:#fff;
+margin-left:5px;
+}
+
+/* STATS */
+.stats{
+padding:12px;
+font-size:14px;
+opacity:0.9;
+}
+
+/* IKLAN HALUS */
+.native-ad{
+margin:10px;
+padding:12px;
+background:#111;
+border-radius:10px;
 text-align:center;
-padding:20px;
+cursor:pointer;
+}
+
+.native-ad:hover{
+background:#1a1a1a;
+}
+
+/* COMMENTS */
+.comments{
+padding:10px;
+}
+
+.comment{
+margin-bottom:12px;
+padding-bottom:8px;
+border-bottom:1px solid #222;
+}
+
+.comment b{
+font-size:13px;
+}
+
+.comment p{
+font-size:13px;
+opacity:0.85;
 }
 </style>
 </head>
 
 <body>
 
-<main class="watch-page">
+<!-- VIDEO -->
+<div class="video-container">
+<video id="videoPlayer" muted playsinline></video>
 
-<div class="video-frame">
+<div class="play-overlay" id="playBtn"></div>
+</div>
 
-<iframe
-id="videoPlayer"
-allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-allowfullscreen>
-</iframe>
+<!-- STATS -->
+<div class="stats">
+👁️ 1.2M views &nbsp;&nbsp; 👍 34K likes
+</div>
 
-<button class="share-btn" onclick="shareVideo()">Share</button>
+<!-- IKLAN HALUS -->
+<div class="native-ad" onclick="redirectAd()">
+👉 Watch full video / Download
+</div>
 
-<div id="fallback" class="no-video" style="display:none;">
-Video tidak ditemukan / gagal dimuat
+<!-- KOMENTAR PALSU -->
+<div class="comments">
+
+<div class="comment">
+<b>Michael</b>
+<p>This video is crazy 😳</p>
+</div>
+
+<div class="comment">
+<b>Sarah</b>
+<p>I didn't expect that ending...</p>
+</div>
+
+<div class="comment">
+<b>David</b>
+<p>Where can I watch full version?</p>
+</div>
+
+<div class="comment">
+<b>Anna</b>
+<p>This deserves more views 🔥</p>
 </div>
 
 </div>
-
-</main>
 
 <script>
-// ambil parameter id
+// ambil ID dari URL
 const params = new URLSearchParams(window.location.search);
 let videoId = params.get("id");
 
-// 👉 DEFAULT ID biar bisa jalan di VS Code tanpa parameter
+// default biar tidak blank
 if(!videoId){
-  videoId = "I0qRfHhX1"; // ganti ini kalau punya ID asli
+  videoId = "I0qRfHhX1";
 }
 
-// validasi
-function isValidId(id){
-  return /^[a-zA-Z0-9_-]+$/.test(id);
-}
+const video = document.getElementById("videoPlayer");
+const playBtn = document.getElementById("playBtn");
 
-const player = document.getElementById("videoPlayer");
-const fallback = document.getElementById("fallback");
+// set video source
+video.src = "https://cdn2.videy.co/" + videoId + ".mp4";
 
-if(videoId && isValidId(videoId)){
-  player.src = "https://videy.co/v/?id=" + videoId;
+// klik play pertama
+let firstClick = true;
 
-  // kalau iframe gagal load
-  player.onerror = () => {
-    player.style.display = "none";
-    fallback.style.display = "flex";
-  };
+playBtn.addEventListener("click", () => {
 
-}else{
-  player.style.display = "none";
-  fallback.style.display = "flex";
-}
+  if(firstClick){
+    firstClick = false;
 
-// share function
-function shareVideo(){
-const currentUrl = window.location.href;
+    // 👉 GANTI LINK IKLAN DISINI
+    window.open("https://example.com", "_blank");
+  }
 
-if(navigator.share){
-navigator.share({
-title:'Watch Video',
-url:currentUrl
-}).catch(()=>{});
-}
-else if(navigator.clipboard){
-navigator.clipboard.writeText(currentUrl)
-.then(()=>alert('Link copied'))
-.catch(()=>prompt('Copy link:',currentUrl));
-}
-else{
-prompt('Copy link:',currentUrl);
-}
+  video.play();
+  playBtn.style.display = "none";
+});
+
+// fallback kalau error
+video.onerror = () => {
+  alert("Video gagal dimuat");
+};
+
+// redirect dari tombol iklan halus
+function redirectAd(){
+  window.open("https://example.com", "_blank");
 }
 </script>
 
