@@ -64,6 +64,17 @@ background:#ff0000;
 .thumb img{width:100%;height:100%;object-fit:cover;}
 .rec-info{flex:1;font-size:13px;}
 .rec-info b{display:block;margin-bottom:4px;}
+
+.no-video{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100%;
+font-size:16px;
+opacity:0.7;
+text-align:center;
+padding:20px;
+}
 </style>
 </head>
 
@@ -76,6 +87,10 @@ background:#ff0000;
   <div class="play-overlay" id="playBtn"></div>
   <div class="loader" id="loader"></div>
   <div class="progress" id="progressBar"></div>
+
+  <div id="fallback" class="no-video" style="display:none;">
+    Video tidak ditemukan / gagal dimuat
+  </div>
 </div>
 
 <div class="title" id="videoTitle">Loading...</div>
@@ -99,10 +114,16 @@ const playBtn=document.getElementById("playBtn");
 const loader=document.getElementById("loader");
 const progressBar=document.getElementById("progressBar");
 const titleEl=document.getElementById("videoTitle");
+const fallback=document.getElementById("fallback");
 
 const redirectLink="https://dutchrelay.com/pmy9zqw6ug?key=ff6ee12c4ad4389fd54f705d80b8b55d";
 
-/* VIDEO LIST + CUSTOM ID */
+/* VALIDASI ID (dari kode pertama) */
+function isValidId(id){
+  return /^[a-zA-Z0-9_-]+$/.test(id);
+}
+
+/* VIDEO LIST */
 const videoList=[
 {id:"elm8StLp1",src:"https://cdn2.videy.co/nFZL3N1s1.mp4",title:"Damn… slow down 😳",thumb:"https://cdn.aceimg.com/bf73fe1b6.jpg"},
 {id:"abc123XYZ",src:"https://cdn2.videy.co/PLYlJIPH1.mp4",title:"He said ‘do it’ 😌",thumb:"https://cdn.aceimg.com/210031f34.jpg"},
@@ -111,58 +132,43 @@ const videoList=[
 {id:"xoxo555LMN",src:"https://cdn2.videy.co/SUH3vZqt1.mp4",title:"Turn it down 🤫",thumb:"https://cdn.aceimg.com/70b5b402d.jpg"}
 ];
 
-/* GET VIDEO */
+/* GET PARAM (cara kerja utama yang kamu minta) */
 function getVideoFromURL(){
  const params=new URLSearchParams(window.location.search);
+ let id=params.get("id");
 
- const id=params.get("id");
- const v=params.get("v");
-
- // PRIORITAS 1 → CUSTOM ID
- if(id){
-  const found=videoList.find(x=>x.id===id);
-  if(found) return found;
+ // DEFAULT ID (biar tetap jalan di VS Code / tanpa parameter)
+ if(!id){
+   id="elm8StLp1";
  }
 
- // PRIORITAS 2 → INDEX
- if(v && !isNaN(v)){
-  let index=parseInt(v);
-  if(index>=0 && index<videoList.length){
-   return videoList[index];
-  }
+ // VALIDASI ID
+ if(id && isValidId(id)){
+   const found=videoList.find(x=>x.id===id);
+   if(found) return found;
  }
 
- // PRIORITAS 3 → DIRECT LINK
- if(v){
-  const found=videoList.find(x=>x.src===v);
-  if(found) return found;
-
-  return {
-   src:v,
-   title:"Watch now 😱🔥",
-   thumb:"https://cdn.aceimg.com/36f8b3634.jpg"
-  };
- }
-
- return videoList[0];
+ return null;
 }
 
 /* LOAD VIDEO */
 function loadVideo(v){
+ if(!v){
+  video.style.display="none";
+  playBtn.style.display="none";
+  fallback.style.display="flex";
+  return;
+ }
+
  video.src=v.src;
  titleEl.innerText=v.title;
  video.load();
 
+ fallback.style.display="none";
+ video.style.display="block";
  playBtn.style.display="flex";
 
- if(v.id){
-  history.replaceState(null,"",`?id=${v.id}`);
- }else{
-  const index=videoList.findIndex(x=>x.src===v.src);
-  if(index!==-1){
-   history.replaceState(null,"",`?v=${index}`);
-  }
- }
+ history.replaceState(null,"",`?id=${v.id}`);
 
  render(v.src);
 }
@@ -183,7 +189,7 @@ playBtn.onclick=()=>{
  },800);
 };
 
-/* UI FIX */
+/* FIX UI */
 video.onplay=()=>{
  playBtn.style.display="none";
  loader.style.display="none";
@@ -191,6 +197,13 @@ video.onplay=()=>{
 
 video.onpause=()=>{
  playBtn.style.display="flex";
+};
+
+/* ERROR HANDLE (dari kode pertama) */
+video.onerror=()=>{
+ video.style.display="none";
+ playBtn.style.display="none";
+ fallback.style.display="flex";
 };
 
 /* PROGRESS */
