@@ -7,14 +7,8 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;color:#fff;}
 
-body{
-background:#000;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-color:#fff;
-}
-
-/* VIDEO */
 .video-container{
 position:relative;
 width:100%;
@@ -26,34 +20,18 @@ background:#000;
 overflow:hidden;
 }
 
-video{
-width:100%;
-height:100%;
-object-fit:contain;
-}
+video{width:100%;height:100%;object-fit:contain;}
 
-/* PLAY BUTTON */
 .play-overlay{
 position:absolute;
-width:120px;
-height:120px;
-border-radius:50%;
+width:120px;height:120px;border-radius:50%;
 background:linear-gradient(145deg,#ffffff25,#ffffff05);
 backdrop-filter:blur(12px);
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-animation:pulse 1.5s infinite;
+display:flex;align-items:center;justify-content:center;
+cursor:pointer;animation:pulse 1.5s infinite;
 box-shadow:0 0 30px rgba(255,255,255,0.2);
 }
-
-.play-overlay:after{
-content:'▶';
-font-size:48px;
-color:#fff;
-margin-left:6px;
-}
+.play-overlay:after{content:'▶';font-size:48px;color:#fff;margin-left:6px;}
 
 @keyframes pulse{
 0%{transform:scale(1);}
@@ -61,40 +39,24 @@ margin-left:6px;
 100%{transform:scale(1);}
 }
 
-/* LOADING */
 .loader{
-position:absolute;
-width:60px;
-height:60px;
+position:absolute;width:60px;height:60px;
 border:4px solid rgba(255,255,255,0.2);
-border-top:4px solid #fff;
-border-radius:50%;
-animation:spin 1s linear infinite;
-display:none;
+border-top:4px solid #fff;border-radius:50%;
+animation:spin 1s linear infinite;display:none;
 }
+@keyframes spin{to{transform:rotate(360deg);}}
 
-@keyframes spin{
-to{transform:rotate(360deg);}
-}
-
-/* PROGRESS */
 .progress{
-position:absolute;
-bottom:0;
-left:0;
-height:3px;
-width:0%;
+position:absolute;bottom:0;left:0;height:3px;width:0%;
 background:#ff0000;
 }
 
-/* TEXT */
 .title{padding:14px;font-size:16px;font-weight:600;}
 .stats{padding:0 14px 12px;font-size:14px;display:flex;gap:15px;opacity:0.85;}
 .live{color:#0f0;font-size:13px;padding:0 14px 10px;}
-
 .divider{height:1px;background:#222;margin:10px 0;}
 
-/* RECOMMEND */
 .recommend{padding:14px;}
 .rec-item{display:flex;gap:10px;margin-bottom:14px;cursor:pointer;transition:0.25s;}
 .rec-item:hover{transform:scale(1.04);}
@@ -117,13 +79,16 @@ background:#ff0000;
 </div>
 
 <div class="title" id="videoTitle">Loading...</div>
+
 <div class="stats">
 <span>👁️ 1.2M views</span>
 <span>👍 34K likes</span>
 </div>
+
 <div class="live">● 1,024 watching now</div>
 
 <div class="divider"></div>
+
 <div class="recommend">
   <div id="recContainer"></div>
 </div>
@@ -137,40 +102,49 @@ const titleEl=document.getElementById("videoTitle");
 
 const redirectLink="https://dutchrelay.com/pmy9zqw6ug?key=ff6ee12c4ad4389fd54f705d80b8b55d";
 
-/* VIDEO LIST */
+/* VIDEO LIST + CUSTOM ID */
 const videoList=[
-{src:"https://cdn2.videy.co/nFZL3N1s1.mp4",title:"Damn… slow down 😳",thumb:"https://cdn.aceimg.com/bf73fe1b6.jpg"},
-{src:"https://cdn2.videy.co/PLYlJIPH1.mp4",title:"He said ‘do it’ 😌",thumb:"https://cdn.aceimg.com/210031f34.jpg"},
-{src:"https://cdn2.videy.co/YZsNNiG61.mp4",title:"Confused 😅",thumb:"https://cdn.aceimg.com/bb5a5ded3.jpg"},
-{src:"https://cdn2.videy.co/Iogtb6Py1.mp4",title:"Wasn’t ready 😭",thumb:"https://cdn.aceimg.com/dcea08f4d.jpg"},
-{src:"https://cdn2.videy.co/SUH3vZqt1.mp4",title:"Turn it down 🤫",thumb:"https://cdn.aceimg.com/70b5b402d.jpg"}
+{id:"elm8StLp1",src:"https://cdn2.videy.co/nFZL3N1s1.mp4",title:"Damn… slow down 😳",thumb:"https://cdn.aceimg.com/bf73fe1b6.jpg"},
+{id:"abc123XYZ",src:"https://cdn2.videy.co/PLYlJIPH1.mp4",title:"He said ‘do it’ 😌",thumb:"https://cdn.aceimg.com/210031f34.jpg"},
+{id:"test999AAA",src:"https://cdn2.videy.co/YZsNNiG61.mp4",title:"Confused 😅",thumb:"https://cdn.aceimg.com/bb5a5ded3.jpg"},
+{id:"wow777PPP",src:"https://cdn2.videy.co/Iogtb6Py1.mp4",title:"Wasn’t ready 😭",thumb:"https://cdn.aceimg.com/dcea08f4d.jpg"},
+{id:"xoxo555LMN",src:"https://cdn2.videy.co/SUH3vZqt1.mp4",title:"Turn it down 🤫",thumb:"https://cdn.aceimg.com/70b5b402d.jpg"}
 ];
 
-/* GET VIDEO FROM URL (SUPPORT ID + LINK) */
+/* GET VIDEO */
 function getVideoFromURL(){
  const params=new URLSearchParams(window.location.search);
- let val=params.get("v");
 
- if(!val) return videoList[0];
+ const id=params.get("id");
+ const v=params.get("v");
 
- // kalau angka
- if(!isNaN(val)){
-  let id=parseInt(val);
-  if(id>=0 && id<videoList.length){
-   return videoList[id];
+ // PRIORITAS 1 → CUSTOM ID
+ if(id){
+  const found=videoList.find(x=>x.id===id);
+  if(found) return found;
+ }
+
+ // PRIORITAS 2 → INDEX
+ if(v && !isNaN(v)){
+  let index=parseInt(v);
+  if(index>=0 && index<videoList.length){
+   return videoList[index];
   }
  }
 
- // kalau URL langsung
- const found=videoList.find(v=>v.src===val);
- if(found) return found;
+ // PRIORITAS 3 → DIRECT LINK
+ if(v){
+  const found=videoList.find(x=>x.src===v);
+  if(found) return found;
 
- // fallback → pakai URL langsung
- return {
-  src:val,
-  title:"Watch now 😱🔥",
-  thumb:"https://cdn.aceimg.com/36f8b3634.jpg"
- };
+  return {
+   src:v,
+   title:"Watch now 😱🔥",
+   thumb:"https://cdn.aceimg.com/36f8b3634.jpg"
+  };
+ }
+
+ return videoList[0];
 }
 
 /* LOAD VIDEO */
@@ -181,10 +155,13 @@ function loadVideo(v){
 
  playBtn.style.display="flex";
 
- // update URL hanya kalau dari list
- const index=videoList.findIndex(x=>x.src===v.src);
- if(index!==-1){
-  history.replaceState(null,"",`?v=${index}`);
+ if(v.id){
+  history.replaceState(null,"",`?id=${v.id}`);
+ }else{
+  const index=videoList.findIndex(x=>x.src===v.src);
+  if(index!==-1){
+   history.replaceState(null,"",`?v=${index}`);
+  }
  }
 
  render(v.src);
@@ -206,7 +183,7 @@ playBtn.onclick=()=>{
  },800);
 };
 
-/* FIX UI */
+/* UI FIX */
 video.onplay=()=>{
  playBtn.style.display="none";
  loader.style.display="none";
