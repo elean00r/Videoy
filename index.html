@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyTube</title>
+<title>MyTube Pro</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -14,177 +14,197 @@ font-family:Arial;
 color:#fff;
 }
 
-/* HEADER */
 .header{
 height:60px;
 display:flex;
 align-items:center;
 padding:0 20px;
-border-bottom:1px solid #222;
+font-size:22px;
 font-weight:bold;
 color:#e50914;
 }
 
-/* LAYOUT */
-.layout{
-display:grid;
-grid-template-columns:1fr 350px;
-gap:20px;
-padding:20px;
-max-width:1300px;
-margin:auto;
+.player{
+max-width:1000px;
+margin:20px auto;
+padding:0 15px;
 }
 
-/* VIDEO */
 .player video{
 width:100%;
 border-radius:12px;
 background:#000;
 }
 
-/* INFO */
-.title{
-margin-top:10px;
+.row{
+margin:20px;
+}
+
+.row-title{
+margin-bottom:10px;
 font-size:18px;
 }
 
-.actions{
-margin-top:10px;
+.row-list{
 display:flex;
 gap:10px;
+overflow-x:auto;
 }
 
-.btn{
-background:#1f1f1f;
-border:none;
-padding:8px 14px;
-border-radius:20px;
-color:#fff;
+.row-list::-webkit-scrollbar{
+display:none;
+}
+
+.card{
+min-width:160px;
 cursor:pointer;
+transition:.3s;
+position:relative;
 }
 
-.btn:hover{
-background:#e50914;
-}
-
-/* SIDEBAR */
-.sidebar{
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-.item{
-display:flex;
-gap:10px;
-cursor:pointer;
-padding:8px;
+.card img{
+width:100%;
 border-radius:10px;
 }
 
-.item:hover{
-background:#1a1a1a;
+.card:hover{
+transform:scale(1.12);
+z-index:5;
 }
 
-.thumb{
-width:120px;
-height:70px;
-background:#333;
-border-radius:8px;
+.play-icon{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:28px;
+color:#fff;
+background:rgba(0,0,0,0.6);
+width:45px;
+height:45px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+opacity:1;
+pointer-events:none;
 }
 
-/* MOBILE */
-@media(max-width:900px){
-.layout{
-grid-template-columns:1fr;
+.card-info{
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+background:rgba(0,0,0,0.7);
+padding:5px;
+font-size:12px;
+border-radius:0 0 10px 10px;
 }
+
+@media(max-width:768px){
+.card{min-width:120px;}
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">MyTube</div>
+<div class="header">MyTube Pro</div>
 
-<div class="layout">
-
-<!-- LEFT -->
-<div>
-
+<!-- VIDEO -->
 <div class="player">
-<video id="video" controls autoplay></video>
+  <video id="video" controls></video>
 </div>
 
-<div class="title" id="title">Memuat...</div>
-
-<div class="actions">
-<button class="btn" onclick="share()">Share</button>
+<!-- TRENDING -->
+<div class="row">
+  <div class="row-title">🔥 Trending Now</div>
+  <div class="row-list" id="trending"></div>
 </div>
 
-</div>
-
-<!-- RIGHT -->
-<div class="sidebar" id="list"></div>
-
+<!-- RECOMMENDED -->
+<div class="row">
+  <div class="row-title">🎯 Recommended For You</div>
+  <div class="row-list" id="recommended"></div>
 </div>
 
 <script>
-// ambil id dari URL
-const params = new URLSearchParams(location.search);
-let id = params.get("id");
 
-// default
-if(!id) id = "I0qRfHhX1";
+// =======================
+// MAIN DATABASE (SEMUA VIDEO)
+// =======================
+const videos = [
+{id:"b6ebtLM61",title:"Viral Explosion",thumb:"https://cdn.aceimg.com/4c6adc60f.png"},
+{id:"b6ebtLM61",title:"Crazy Moment",thumb:"https://cdn.aceimg.com/3722eb687.png"},
+{id:"b6ebtLM61",title:"Top Trending",thumb:"https://cdn.aceimg.com/256903f41.png"},
+{id:"b6ebtLM61",title:"Must Watch",thumb:"https://cdn.aceimg.com/abf8849c1.png"},
+{id:"b6ebtLM61",title:"Unbelievable",thumb:"https://cdn.aceimg.com/be92c85b8.png"},
+{id:"FB52GziE1",title:"🔥 Insane Clip",thumb:"https://cdn.aceimg.com/e5cb87f28.png"},
+{id:"JL8naMl81",title:"Best Video",thumb:"https://cdn.aceimg.com/2dad0740c.png"},
+{id:"8KQyvCLb1",title:"Hot Right Now",thumb:"https://cdn.aceimg.com/547cf763d.png"},
+{id:"8KQyvCLb1",title:"Hot Right Now",thumb:"https://cdn.aceimg.com/e596a8f6a.png"},
+{id:"8KQyvCLb1",title:"Hot Right Now",thumb:"https://cdn.aceimg.com/fe63b5d23.png"}
+];
 
-// validasi
-function valid(i){
-return /^[a-zA-Z0-9_-]+$/.test(i);
+// =======================
+// SHUFFLE FUNCTION
+// =======================
+function shuffle(arr){
+  return arr.sort(() => Math.random() - 0.5);
 }
+
+// =======================
+// GET CURRENT VIDEO
+// =======================
+const params = new URLSearchParams(location.search);
+let id = params.get("id") || "I0qRfHhX1";
 
 const video = document.getElementById("video");
-const title = document.getElementById("title");
+video.src = "https://cdn2.videy.co/" + id + ".mp4";
 
-// 🔥 GANTI POLA DI SINI (SESUIKAN CDN)
-const videoUrl = "https://cdn2.videy.co/" + id + ".mp4";
+// =======================
+// FILTER OUT CURRENT VIDEO
+// =======================
+const available = videos.filter(v => v.id !== id);
 
-// load video
-if(valid(id)){
-  video.src = videoUrl;
-  title.innerText = "Video ID: " + id;
+// =======================
+// SEPARATE DATA (IMPORTANT PART)
+// =======================
 
-  video.onerror = () => {
-    title.innerText = "Video gagal dimuat / tidak ditemukan";
-  };
+// 🔥 TRENDING = random 5 video
+const trending = shuffle([...available]).slice(0,5);
 
-}else{
-  title.innerText = "ID tidak valid";
+// 🎯 RECOMMENDED = different set (no overlap)
+const remainingForRecommended = available.filter(v => !trending.includes(v));
+const recommended = shuffle([...remainingForRecommended]).slice(0,6);
+
+// =======================
+// RENDER FUNCTION
+// =======================
+function render(containerId, data){
+  const container = document.getElementById(containerId);
+
+  data.forEach(v=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.onclick = () => location.search = "?id=" + v.id;
+
+    card.innerHTML = `
+      <img src="${v.thumb}">
+      <div class="play-icon">▶</div>
+      <div class="card-info">${v.title}</div>
+    `;
+
+    container.appendChild(card);
+  });
 }
 
-// sidebar dummy
-const list = document.getElementById("list");
+// =======================
+// LOAD UI
+// =======================
+render("trending", trending);
+render("recommended", recommended);
 
-const demo = ["I0qRfHhX1","abc123","test777","hello999","vid888"];
-
-demo.forEach(v=>{
-  if(v === id) return;
-
-  const div = document.createElement("div");
-  div.className = "item";
-  div.onclick = () => location.search = "?id=" + v;
-
-  div.innerHTML = `
-    <div class="thumb"></div>
-    <div>Video ${v}</div>
-  `;
-
-  list.appendChild(div);
-});
-
-// share
-function share(){
-navigator.clipboard.writeText(location.href);
-alert("Link copied");
-}
 </script>
 
 </body>
