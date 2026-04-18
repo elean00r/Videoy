@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<meta name="clckd" content="6f2b7530d3dd593cdad60204559f161f" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ONLINE</title>
+<title>PlayNaw Online</title>
+
+<meta name="referrer" content="no-referrer-when-downgrade">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -25,61 +28,51 @@ color:#e50914;
 }
 
 .layout{
-display:flex;
-flex-direction:column;
-gap:15px;
-padding:20px;
-max-width:900px;
+max-width:1000px;
 margin:auto;
+padding:20px;
 }
 
-/* PLAYER */
 .player video{
 width:100%;
 border-radius:12px;
 background:#000;
 }
 
-/* AUTHOR */
-.author{
+/* 🔥 CHANNEL STYLE */
+.channel-box{
 display:flex;
 align-items:center;
 gap:10px;
-font-size:14px;
-color:#bbb;
+margin-top:10px;
 }
 
-.avatar{
-width:32px;
-height:32px;
+.channel-box img{
+width:35px;
+height:35px;
 border-radius:50%;
-background:#333;
-object-fit:cover;
 }
 
-/* ACTIONS */
-.actions{
+.channel-info{
 display:flex;
-gap:10px;
+flex-direction:column;
 }
 
-.btn{
-background:#1f1f1f;
-border:none;
-padding:8px 14px;
-border-radius:20px;
-color:#fff;
-cursor:pointer;
+.channel-name{
+font-weight:bold;
+font-size:14px;
 }
 
-.btn:hover{
-background:#e50914;
+.channel-sub{
+font-size:12px;
+color:#aaa;
 }
 
-/* GRID */
-.sidebar{
+/* 🔥 RECOMMEND */
+.recommend{
+margin-top:20px;
 display:grid;
-grid-template-columns:repeat(3, 1fr);
+grid-template-columns:repeat(3,1fr);
 gap:10px;
 }
 
@@ -103,19 +96,17 @@ display:block;
 
 .play-icon{
 position:absolute;
-top:45%;
+top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-font-size:28px;
-color:#fff;
-background:rgba(0,0,0,0.5);
+background:rgba(0,0,0,0.6);
 width:50px;
 height:50px;
+border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-border-radius:50%;
-z-index:3;
+font-size:20px;
 }
 
 .preview-video{
@@ -125,54 +116,48 @@ left:0;
 width:100%;
 height:100%;
 object-fit:cover;
-z-index:2;
 display:none;
 }
 
-.item::after{
-content:"";
-position:absolute;
-inset:0;
-background:rgba(0,0,0,0.2);
-z-index:1;
-}
-
-/* 👇 CHANNEL NAME (NEW) */
 .channel{
-padding:6px 8px;
+padding:6px;
 font-size:12px;
 color:#aaa;
 background:#0f0f0f;
 border-top:1px solid #1f1f1f;
-}
-
-/* NAV BUTTONS */
-.nav-buttons{
 display:flex;
-justify-content:space-between;
-gap:10px;
+align-items:center;
+gap:5px;
+}
+
+.channel img{
+width:20px;
+height:20px;
+border-radius:50%;
+}
+
+.actions{
 margin-top:10px;
+display:flex;
+gap:10px;
 }
 
-.nav-buttons button{
-flex:1;
-padding:10px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
+.btn{
 background:#1f1f1f;
+border:none;
+padding:8px 14px;
+border-radius:20px;
 color:#fff;
-transition:0.2s;
+cursor:pointer;
 }
 
-.nav-buttons button:hover{
+.btn:hover{
 background:#e50914;
 }
 
 @media(max-width:700px){
-.sidebar{
-grid-template-columns:repeat(2, 1fr);
+.recommend{
+grid-template-columns:repeat(2,1fr);
 }
 }
 </style>
@@ -180,71 +165,83 @@ grid-template-columns:repeat(2, 1fr);
 
 <body>
 
-<div class="header">PlayNAW</div>
+<div class="header">MyTube</div>
 
 <div class="layout">
 
-<!-- VIDEO -->
+<!-- 🔴 BANNER -->
+<div style="margin-bottom:15px;text-align:center;">
+
+</div>
+
 <div class="player">
 <video id="video" controls preload="metadata"></video>
 </div>
 
-<!-- AUTHOR -->
-<div class="author">
-<img id="avatar" class="avatar">
-<span id="authorName">PlayNAW</span>
-</div>
+<!-- 🔥 CHANNEL INFO (YOUTUBE STYLE) -->
+<div class="channel-box" id="channelBox"></div>
 
 <div class="actions">
 <button class="btn" onclick="share()">Share</button>
 </div>
 
-<!-- RECOMMEND -->
-<div class="sidebar" id="list"></div>
-
-<!-- NAV BUTTONS -->
-<div class="nav-buttons">
-<button onclick="prevVideo()">⬅ Prev</button>
-<button onclick="nextExternal()">Next ➜</button>
-</div>
+<!-- 🔥 RECOMMEND -->
+<div class="recommend" id="list"></div>
 
 </div>
+
+<!-- 🔴 FLOATING ADS -->
+<div style="position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:9999;"></div>
 
 <script>
+
 const params = new URLSearchParams(location.search);
 let id = params.get("id") || "I0qRfHhX1";
 
 const video = document.getElementById("video");
+const channelBox = document.getElementById("channelBox");
 const list = document.getElementById("list");
-const authorName = document.getElementById("authorName");
-const avatar = document.getElementById("avatar");
 
-video.src = "https://cdn2.videy.co/" + id + ".mp4";
-
-/* DATA */
-const videos = [
-{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/4c6adc60f.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/3722eb687.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/256903f41.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/abf8849c1.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/be92c85b8.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"FB52GziE1",thumb:"https://cdn.aceimg.com/e5cb87f28.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"JL8naMl81",thumb:"https://cdn.aceimg.com/2dad0740c.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"8KQyvCLb1",thumb:"https://cdn.aceimg.com/547cf763d.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"8KQyvCLb1",thumb:"https://cdn.aceimg.com/e596a8f6a.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"},
-{id:"8KQyvCLb1",thumb:"https://cdn.aceimg.com/fe63b5d23.png", author:"Music Vibes", avatar:"https://i.pravatar.cc/40?img=6"}
-];
-
-/* CURRENT */
-const currentIndex = videos.findIndex(v => v.id === id);
-const current = videos[currentIndex];
-
-if(current){
-  authorName.innerText = current.author;
-  avatar.src = current.avatar;
+function valid(i){
+  return /^[a-zA-Z0-9_-]+$/.test(i);
 }
 
-/* RENDER */
+/* 🔥 DATA VIDEO */
+const videos = [
+{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/4c6adc60f.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/3722eb687.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/256903f41.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/abf8849c1.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"b6ebtLM61",thumb:"https://cdn.aceimg.com/be92c85b8.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"FB52GziE1",thumb:"https://cdn.aceimg.com/e5cb87f28.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"JL8naMl81",thumb:"https://cdn.aceimg.com/2dad0740c.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"8KQyvCLb1",thumb:"https://cdn.aceimg.com/547cf763d.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"8KQyvCLb1",thumb:"https://cdn.aceimg.com/e596a8f6a.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"},
+{id:"8KQyvCLb1",thumb:"https://cdn.aceimg.com/fe63b5d23.png", author:"Music Vibes", avatar:"https://cdn.aceimg.com/c90e7a7f2.jpg"}
+];
+
+const currentVideo = videos.find(v=>v.id===id);
+
+/* 🔥 MAIN VIDEO */
+if(valid(id)){
+  video.src = "https://cdn2.videy.co/" + id + ".mp4";
+
+  if(currentVideo){
+    channelBox.innerHTML = `
+      <img src="${currentVideo.avatar}">
+      <div class="channel-info">
+        <div class="channel-name">${currentVideo.author}</div>
+        <div class="channel-sub">Official Channel</div>
+      </div>
+    `;
+  }else{
+    channelBox.innerHTML = `
+      <div class="channel-name">PlayNAW</div>
+    `;
+  }
+}
+
+/* 🔥 RENDER RECOMMEND */
 videos.forEach(v=>{
   if(v.id === id) return;
 
@@ -256,8 +253,10 @@ videos.forEach(v=>{
     <div class="play-icon">▶</div>
     <video class="preview-video" muted></video>
 
-    <!-- 👇 CHANNEL NAME -->
-    <div class="channel">${v.author}</div>
+    <div class="channel">
+      <img src="${v.avatar}">
+      ${v.author}
+    </div>
   `;
 
   const preview = div.querySelector("video");
@@ -265,7 +264,7 @@ videos.forEach(v=>{
 
   div.addEventListener("mouseenter", async () => {
     preview.style.display = "block";
-    try { await preview.play(); } catch(e){}
+    try{ await preview.play(); }catch(e){}
     preview._t = setTimeout(()=>{
       preview.pause();
       preview.currentTime = 0;
@@ -293,26 +292,24 @@ function share(){
   alert("Link copied");
 }
 
-/* PREV */
-function prevVideo(){
-  if(currentIndex > 0){
-    location.search = "?id=" + videos[currentIndex - 1].id;
-  }else{
-    location.search = "?id=" + videos[videos.length - 1].id;
+/* 🔥 REDIRECT IKLAN (TETAP) */
+setTimeout(() => {
+  if(!sessionStorage.getItem("redirected")){
+    sessionStorage.setItem("redirected", "yes");
+    window.open("https://dutchrelay.com/pmy9zqw6ug?key=ff6ee12c4ad4389fd54f705d80b8b55d", "_blank");
   }
-}
-
-/* NEXT EXTERNAL */
-function nextExternal(){
-  window.location.href = "https://videoy.online";
-}
+}, 10000);
 
 /* AUTO NEXT */
 video.addEventListener("ended", () => {
-  const random = videos[Math.floor(Math.random() * videos.length)];
+  const random = videos[Math.floor(Math.random()*videos.length)];
   location.search = "?id=" + random.id;
 });
+
 </script>
+
+<!-- POPUNDER -->
+<script src="https://dutchrelay.com/73/ed/07/73ed0749fb832c6d6f88048a2e5c9591.js"></script>
 
 </body>
 </html>
