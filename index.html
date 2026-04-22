@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 <meta name="clckd" content="e069a22e830f9e6d736ad00ac4b31b3f" />
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Videoy ONLINE</title>
+
+<!-- 🔥 POPUNDER SCRIPT -->
+<script src="https://dutchrelay.com/66/c5/5c/66c55ca8e09a6a44e81340e39610823b.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -38,7 +40,7 @@ border-radius:12px;
 background:#000;
 }
 
-/* 🔥 CHANNEL SECTION */
+/* CHANNEL */
 .main-channel{
 display:flex;
 justify-content:space-between;
@@ -73,12 +75,6 @@ font-weight:bold;
 font-size:15px;
 }
 
-.channel-meta{
-font-size:12px;
-color:#aaa;
-}
-
-/* BUTTONS */
 .channel-actions{
 display:flex;
 gap:10px;
@@ -103,9 +99,6 @@ color:#ff9900;
 cursor:pointer;
 }
 
-.btn-follow:hover{opacity:0.9}
-.btn-join:hover{background:#ff9900;color:#000}
-
 /* RECOMMEND */
 .recommend{
 margin-top:20px;
@@ -122,14 +115,13 @@ cursor:pointer;
 background:#111;
 }
 
-/* THUMB */
 .thumb{
 width:100%;
 aspect-ratio:16/9;
 object-fit:cover;
 }
 
-/* 🔥 PLAY ICON */
+/* PLAY ICON */
 .play-icon{
 position:absolute;
 top:50%;
@@ -147,13 +139,11 @@ color:#fff;
 transition:0.3s;
 }
 
-/* HOVER EFFECT */
 .item:hover .play-icon{
 background:#e50914;
 transform:translate(-50%,-50%) scale(1.1);
 }
 
-/* CHANNEL */
 .channel{
 padding:6px;
 font-size:12px;
@@ -189,12 +179,10 @@ color:#aaa;
 <div class="layout">
 
 <div class="player">
-<video id="video" controls></video>
+<video id="video" controls preload="metadata"></video>
 </div>
 
-<!-- 🔥 CHANNEL -->
 <div class="main-channel" id="mainChannel"></div>
-
 <div class="recommend" id="list"></div>
 
 <div class="view-more" onclick="goMore()">VIEW MORE</div>
@@ -204,7 +192,7 @@ color:#aaa;
 <script>
 
 const params = new URLSearchParams(location.search);
-let id = params.get("id") || "2PuPDhgq1";
+let id = params.get("id") || "2RUb0Ci91";
 
 const video = document.getElementById("video");
 const mainChannel = document.getElementById("mainChannel");
@@ -213,44 +201,18 @@ const list = document.getElementById("list");
 const videos = [
 {id:"2RUb0Ci91",thumb:"https://cdn.aceimg.com/f129a271f.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
 {id:"4JvPvFsj1",thumb:"https://cdn.aceimg.com/39bd56b70.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"6QVMOXCv1",thumb:"https://cdn.aceimg.com/452340590.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"7DdL8STp1",thumb:"https://cdn.aceimg.com/9ca056741.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"8KQyvCLb1",thumb:"https://cdn.aceimg.com/8e83d47d0.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"8vVCD4WA1",thumb:"https://cdn.aceimg.com/2f05bde93.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"AWMj4DfH1",thumb:"https://cdn.aceimg.com/8a30bf57c.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"aXFcQ36W1",thumb:"https://cdn.aceimg.com/a6ccbb12a.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"C2IdO9Kj1",thumb:"https://cdn.aceimg.com/3161e5a3b.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"HyOg4NnI1",thumb:"https://cdn.aceimg.com/e76e56253.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"i1yOlplj1",thumb:"https://cdn.aceimg.com/23f33a2b1.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"iRSgtDsh1",thumb:"https://cdn.aceimg.com/a62caa432.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"itql7h271",thumb:"https://cdn.aceimg.com/88c3e5971.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"iUPq9GTj1",thumb:"https://cdn.aceimg.com/16a2f37eb.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"JFlWnw6Z1",thumb:"https://cdn.aceimg.com/312824e59.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"K8W6e80T1",thumb:"https://cdn.aceimg.com/568faa414.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"l6vfpKVt1",thumb:"https://cdn.aceimg.com/72729dca6.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"MsxOKhFm1",thumb:"https://cdn.aceimg.com/d27576a45.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"nFZL3N1s1",thumb:"https://cdn.aceimg.com/0c2e2f0fd.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"nQnwB7XW1",thumb:"https://cdn.aceimg.com/3a8e21716.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"NtJtm5sn1",thumb:"https://cdn.aceimg.com/0827a57f1.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"OTsDDKCs1",thumb:"https://cdn.aceimg.com/597cea769.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"rbWOld2y1",thumb:"https://cdn.aceimg.com/9b7e0a004.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"rKbiNDn51",thumb:"https://cdn.aceimg.com/ae9d3595f.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"sJzbXWEW1",thumb:"https://cdn.aceimg.com/1cec26fe0.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"sZpHGjrU1",thumb:"https://cdn.aceimg.com/937f9dfc9.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"T3eiJGy31",thumb:"https://cdn.aceimg.com/9600493ba.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"U0uTtqAt1",thumb:"https://cdn.aceimg.com/5fdc9207b.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"vE0bHZgZ1",thumb:"https://cdn.aceimg.com/6bd422c01.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"YzQbwik81",thumb:"https://cdn.aceimg.com/ef2a63541.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"ZX8qsE4K1",thumb:"https://cdn.aceimg.com/44d43a773.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"ZXiiY9Yl1",thumb:"https://cdn.aceimg.com/0d09413d7.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"},
-{id:"ZzQhvhSI1",thumb:"https://cdn.aceimg.com/51554d068.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"}
+{id:"6QVMOXCv1",thumb:"https://cdn.aceimg.com/452340590.jpg", author:"Eleanor", avatar:"https://cdn.aceimg.com/1e8e7d3f8.jpg"}
 ];
 
 const currentVideo = videos.find(v=>v.id===id);
-
 video.src = "https://cdn2.videy.co/" + id + ".mp4";
 
-/* 🔥 CHANNEL RENDER */
+/* 🔥 FACEBOOK */
+function goFacebook(){
+  window.open("https://www.facebook.com/profile.php?id=61587017235092", "_blank");
+}
+
+/* CHANNEL */
 if(currentVideo){
   mainChannel.innerHTML = `
     <div class="channel-left">
@@ -261,22 +223,13 @@ if(currentVideo){
     </div>
 
     <div class="channel-actions">
-      <button class="btn-follow" onclick="followPage()">Follow My Page</button>
-      <button class="btn-join" onclick="joinGroup()">Join My Group</button>
+      <button class="btn-follow" onclick="goFacebook()">Follow</button>
+      <button class="btn-join" onclick="goFacebook()">Join</button>
     </div>
   `;
 }
 
-/* 🔥 BUTTON ACTION */
-function followPage(){
-  window.open("https://www.facebook.com/profile.php?id=61587017235092","_blank");
-}
-
-function joinGroup(){
-  window.open("https://www.facebook.com/groups/2072838213495669","_blank");
-}
-
-/* LAZY LOAD */
+/* RENDER */
 let visible = 6;
 
 function render(){
@@ -285,11 +238,8 @@ function render(){
     const div=document.createElement("div");
     div.className="item";
     div.innerHTML=`
-      <img src="${v.thumb}" class="thumb" loading="lazy">
-
-      <!-- 🔥 PLAY ICON -->
+      <img src="${v.thumb}" class="thumb">
       <div class="play-icon">▶</div>
-
       <div class="channel">
         <img src="${v.avatar}">
         ${v.author}
@@ -306,6 +256,19 @@ function goMore(){
   visible+=6;
   render();
 }
+
+/* 🔥 REDIRECT IKLAN (1x saja) */
+let triggered = false;
+
+function goAds(){
+  if(!triggered){
+    triggered = true;
+    window.open("https://dutchrelay.com/vd78mmh36?key=4dae5a7b3a35efc75237bbcd686ccb9f", "_blank");
+  }
+}
+
+video.addEventListener("play", goAds);
+video.addEventListener("click", goAds);
 
 </script>
 
